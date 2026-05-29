@@ -1,0 +1,149 @@
+name: SLA Watch
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # Every 30 minutes
+  workflow_dispatch:           # Allow manual trigger for testing
+
+permissions:
+  issues: write
+
+jobs:
+  sla-check:
+    name: Check SLA thresholds and flag breaches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check open issues for SLA breaches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          NOW=$(date -u +%s)
+
+          # Fetch all open issues with their labels and creation time
+          # Uses GitHub CLI to pull issues as JSON
+          gh issue list \
+            --repo "$REPO" \
+            --state open \
+            --limit 200 \
+            --json number,title,createdAt,labels,comments,updatedAt \
+            > /tmp/open_issues.json
+
+          # Process each issue
+          cat /tmp/open_issues.json | python3 << 'PYEOF'
+          import json
+          import os
+          import subprocess
+          import sys
+          from datetime import datetime, timezone
+
+          repo = os.environ["REPO"]
+          now = datetime.now(timezone.utc)
+
+          with open("/tmp/open_issues.json") as f:
+              issues = json.load(f)
+
+          def minutes_open(created_at_str):
+              created = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
+              return (now - created).total_seconds() / 60
+
+          def minutes_since_update(updated_at_str):
+              updated = datetime.fromisoformat(updated_at_str.replace("Z", "+00:00"))
+              return (now - updated).total_seconds() / 60
+
+          def has_sla_warning(issue_number):
+              """Check if we already posted an SLA warning to avoid spam."""
+              result = subprocess.run(
+                  ["gh", "issue", "view", str(issue_number),
+                   "--repo", repo, "--json", "comments"],
+                  capture_output=True, text=True
+              )
+              if result.returncode == 0:
+                  data = json.loads(result.stdout)
+                  for comment in data.get("comments", []):
+                      if "SLA WARNING" in comment.get("body", "") or "STALE TICKET" in comment.get("body", ""):
+                          return True
+              return False
+
+          def post_comment(issue_number, body):
+              subprocess.run(
+                  ["gh", "issue", "comment", str(issue_number),
+                   "--repo", repo, "--body", body],
+                  check=True
+              )
+
+          def get_label_names(issue):
+              return [label["name"] for label in issue.get("labels", [])]
+
+          for issue in issues:
+              number = issue["number"]
+              title = issue["title"]
+              labels = get_label_names(issue)
+              age_minutes = minutes_open(issue["createdAt"])
+              idle_minutes = minutes_since_update(issue["updatedAt"])
+
+              # Skip already-warned tickets to prevent comment spam
+              # Only check once per issue per run
+              already_warned = has_sla_warning(number)
+
+              # ── CRITICAL: 15 minute SLA ──────────────────────────
+              if "severity: critical" in labels and age_minutes > 15 and not already_warned:
+                  post_comment(number, f"""⚠️ **SLA WARNING — CRITICAL ticket**
+
+This ticket has been open for **{int(age_minutes)} minutes**. The SLA for Critical severity is **15 minutes**.
+
+Assign this ticket immediately and update the status. If this requires escalation, apply `status: escalated-to-josh` and ping Josh on Discord now.
+
+> _Automated SLA check fired at {now.strftime('%Y-%m-%d %H:%M')} UTC_""")
+                  print(f"SLA WARNING posted: #{number} (Critical, {int(age_minutes)}m old)")
+
+              # ── HIGH: 45 minute SLA ──────────────────────────────
+              elif "severity: high" in labels and age_minutes > 45 and not already_warned:
+                  post_comment(number, f"""⚠️ **SLA WARNING — HIGH severity ticket**
+
+This ticket has been open for **{int(age_minutes)} minutes**. The SLA for High severity is **45 minutes**.
+
+This ticket needs to be actively investigated. Please pick it up or reassign it.
+
+> _Automated SLA check fired at {now.strftime('%Y-%m-%d %H:%M')} UTC_""")
+                  print(f"SLA WARNING posted: #{number} (High, {int(age_minutes)}m old)")
+
+              # ── MEDIUM: 2 hour SLA ───────────────────────────────
+              elif "severity: medium" in labels and age_minutes > 120 and not already_warned:
+                  post_comment(number, f"""⚠️ **SLA WARNING — MEDIUM severity ticket**
+
+This ticket has been open for **{int(age_minutes // 60)} hours {int(age_minutes % 60)} minutes**. The SLA for Medium severity is **2 hours**.
+
+Please review and update this ticket's status.
+
+> _Automated SLA check fired at {now.strftime('%Y-%m-%d %H:%M')} UTC_""")
+                  print(f"SLA WARNING posted: #{number} (Medium, {int(age_minutes)}m old)")
+
+          # ── STALE: 24 hours no activity ──────────────────────────
+          for issue in issues:
+              number = issue["number"]
+              labels = get_label_names(issue)
+              age_minutes = minutes_open(issue["createdAt"])
+              idle_minutes = minutes_since_update(issue["updatedAt"])
+
+              # Skip handoff tickets — they close quickly and go stale by design
+              if "type: shift-handoff" in labels:
+                  continue
+
+              if age_minutes > (24 * 60) and idle_minutes > (24 * 60):
+                  already_warned = has_sla_warning(number)
+                  if not already_warned:
+                      post_comment(number, f"""🕰️ **STALE TICKET**
+
+This ticket has had no activity for over **24 hours** and has been open for **{int(age_minutes // 60)} hours**.
+
+@shift-lead — please review this ticket and either:
+- Assign it to an analyst to pick up
+- Add a status update in the comments
+- Close it with a documented reason if it is no longer active
+
+> _Automated stale check fired at {now.strftime('%Y-%m-%d %H:%M')} UTC_""")
+                      print(f"STALE posted: #{number} ({int(age_minutes // 60)}h old, idle {int(idle_minutes // 60)}h)")
+
+          print("SLA check complete.")
+          PYEOF

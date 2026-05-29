@@ -1,0 +1,443 @@
+name: SOC Automation
+
+on:
+  issues:
+    types: [opened, assigned, labeled, closed]
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  repository-projects: write
+
+jobs:
+
+  # ─────────────────────────────────────────────────────────────
+  # T1 INVESTIGATION OPENED
+  # Trigger: issue opened with label "type: tracking-case" or "t1-investigation"
+  # ─────────────────────────────────────────────────────────────
+  t1-investigation-opened:
+    name: T1 Investigation — Add to project and set fields
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'opened' &&
+      (
+        contains(github.event.issue.labels.*.name, 'type: tracking-case') ||
+        contains(github.event.issue.labels.*.name, 'type: t1-investigation')
+      )
+    steps:
+      - name: Add issue to SOC Live Operations project
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: |
+          gh project item-add 4 \
+            --owner jennafrank \
+            --url "$ISSUE_URL"
+
+      - name: Set Status to Investigating
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          # Get the item ID for this issue in the project
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes {
+                      id
+                      project { id }
+                    }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
+
+          # Set Status = Investigating (option ID: 47fc9ee4)
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $option }
+              }) { projectV2Item { id } }
+            }' \
+            -f project="PVT_kwHOCQvypM4BZJLu" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ-_o" \
+            -f option="47fc9ee4"
+
+      - name: Set Assigned Role to T1 Analyst
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
+
+          # Get T1 Analyst option ID from Assigned Role field
+          T1_OPTION=$(gh api graphql -f query='
+            query {
+              node(id: "PVT_kwHOCQvypM4BZJLu") {
+                ... on ProjectV2 {
+                  field(name: "Assigned Role") {
+                    ... on ProjectV2SingleSelectField {
+                      options { id name }
+                    }
+                  }
+                }
+              }
+            }' --jq '.data.node.field.options[] | select(.name == "T1 Analyst") | .id')
+
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $option }
+              }) { projectV2Item { id } }
+            }' \
+            -f project="PVT_kwHOCQvypM4BZJLu" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ_VE" \
+            -f option="$T1_OPTION"
+
+  # ─────────────────────────────────────────────────────────────
+  # SHIFT HANDOFF OPENED
+  # Trigger: issue opened with label "type: shift-handoff"
+  # ─────────────────────────────────────────────────────────────
+  shift-handoff-opened:
+    name: Shift Handoff — Add to project and post receipt prompt
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'opened' &&
+      contains(github.event.issue.labels.*.name, 'type: shift-handoff')
+    steps:
+      - name: Add to project with Status = New
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          gh project item-add 4 \
+            --owner jennafrank \
+            --url "$ISSUE_URL"
+
+          sleep 3
+
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
+
+          # Status = New (option ID: f75ad846)
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $option }
+              }) { projectV2Item { id } }
+            }' \
+            -f project="PVT_kwHOCQvypM4BZJLu" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ-_o" \
+            -f option="f75ad846"
+
+      - name: Post receipt prompt comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body "$(cat <<'EOF'
+:arrows_counterclockwise: **Handoff received.**
+
+Incoming analyst — please:
+1. Read this ticket in full
+2. Review all linked active tracking cases
+3. Check tool health status
+4. Leave a comment confirming receipt (e.g. *"Bravo online as of [time] UTC. Reviewed and ready."*)
+5. **Close this ticket** once you have confirmed the brief
+
+> If no receipt comment is left within 30 minutes of shift start, the Shift Lead will be notified.
+EOF
+)"
+
+  # ─────────────────────────────────────────────────────────────
+  # ESCALATION TO T2 — detected in comment
+  # ─────────────────────────────────────────────────────────────
+  escalate-to-t2:
+    name: Escalation to T2 — update status and notify
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.action == 'created' &&
+      contains(toLower(github.event.comment.body), 'escalating to t2')
+    steps:
+      - name: Update Status to Escalated to T2
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
+
+          # Status = Escalated to T2 (option ID: 6465bb16)
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $option }
+              }) { projectV2Item { id } }
+            }' \
+            -f project="PVT_kwHOCQvypM4BZJLu" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ-_o" \
+            -f option="6465bb16"
+
+      - name: Post escalation acknowledgment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body "$(cat <<'EOF'
+:arrow_up: **Escalation received. Status updated to Escalated to T2.**
+
+T2 analyst — this ticket has been escalated and is ready for pickup. Please:
+- Review the full comment history before taking action
+- Leave a comment confirming you have picked this up
+- Update the Assigned Role field to T2 Analyst
+EOF
+)"
+
+  # ─────────────────────────────────────────────────────────────
+  # ESCALATION TO JOSH — comment trigger
+  # ─────────────────────────────────────────────────────────────
+  escalate-to-josh-comment:
+    name: Escalation to Josh — comment trigger
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.action == 'created' &&
+      contains(toLower(github.event.comment.body), 'escalating to josh')
+    steps:
+      - name: Apply escalated-to-josh label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue edit "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --add-label "status: escalated-to-josh"
+
+      - name: Update project Status to Escalated to Josh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
+
+          # Status = Escalated to Josh (option ID: 3fe52f8f)
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $option }
+              }) { projectV2Item { id } }
+            }' \
+            -f project="PVT_kwHOCQvypM4BZJLu" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ-_o" \
+            -f option="3fe52f8f"
+
+      - name: Post SOC Lead escalation comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body "$(cat <<'EOF'
+:rotating_light: **SOC Lead escalation triggered. Status updated to Escalated to Josh.**
+
+This ticket has been flagged for SOC Lead attention. The analyst who escalated this should also send a direct Discord message to Josh with a link to this ticket.
+
+> The label creates the record. The Discord message creates the urgency.
+EOF
+)"
+
+  # ─────────────────────────────────────────────────────────────
+  # ESCALATION TO JOSH — label trigger
+  # ─────────────────────────────────────────────────────────────
+  escalate-to-josh-label:
+    name: Escalation to Josh — label trigger
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'status: escalated-to-josh'
+    steps:
+      - name: Update project Status to Escalated to Josh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
+
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $option }
+              }) { projectV2Item { id } }
+            }' \
+            -f project="PVT_kwHOCQvypM4BZJLu" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ-_o" \
+            -f option="3fe52f8f"
+
+      - name: Post SOC Lead escalation comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body "$(cat <<'EOF'
+:rotating_light: **SOC Lead escalation triggered via label. Status updated to Escalated to Josh.**
+
+Ping Josh directly on Discord with a link to this ticket. Do not wait for him to find it.
+EOF
+)"
+
+  # ─────────────────────────────────────────────────────────────
+  # ISSUE CLOSED
+  # ─────────────────────────────────────────────────────────────
+  issue-closed:
+    name: Issue closed — update status and post closure comment
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issues' &&
+      github.event.action == 'closed'
+    steps:
+      - name: Update project Status to Closed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          ITEM_ID=$(gh api graphql -f query='
+            query($issue: ID!) {
+              node(id: $issue) {
+                ... on Issue {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' -f issue="$ISSUE_NODE_ID" \
+            --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id' 2>/dev/null || echo "")
+
+          if [ -n "$ITEM_ID" ]; then
+            # Status = Closed (option ID: 98236657)
+            gh api graphql -f query='
+              mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $project
+                  itemId: $item
+                  fieldId: $field
+                  value: { singleSelectOptionId: $option }
+                }) { projectV2Item { id } }
+              }' \
+              -f project="PVT_kwHOCQvypM4BZJLu" \
+              -f item="$ITEM_ID" \
+              -f field="PVTSSF_lAHOCQvypM4BZJLuzhUJ-_o" \
+              -f option="98236657"
+          fi
+
+      - name: Post closure comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body "$(cat <<'EOF'
+:white_check_mark: **Case closed.**
+
+Before this ticket is fully done, confirm:
+- All observed attacker behavior is documented in the ticket or linked tracking case
+- Any relevant IOCs or techniques have been logged in MISP
+- The next shift has been briefed if this was an active tracking case
+
+> If there is no ticket, it did not happen. If there is no documentation, it did not matter.
+EOF
+)"

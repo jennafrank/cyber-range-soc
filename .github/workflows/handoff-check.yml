@@ -1,0 +1,127 @@
+name: Shift Handoff Check
+
+on:
+  schedule:
+    # 5 minutes after each shift transition (UTC)
+    - cron: '5 0 * * *'    # 00:05 UTC — Shift 1 starts  (12am-6am)
+    - cron: '5 6 * * *'    # 06:05 UTC — Shift 2 starts  (6am-12pm)
+    - cron: '5 12 * * *'   # 12:05 UTC — Shift 3 starts  (12pm-6pm)
+    - cron: '5 18 * * *'   # 18:05 UTC — Shift 4 starts  (6pm-12am)
+  workflow_dispatch:         # Allow manual trigger for testing
+
+permissions:
+  issues: write
+
+jobs:
+  handoff-check:
+    name: Verify shift handoff was filed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for handoff ticket in last 35 minutes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 << 'PYEOF'
+          import json
+          import os
+          import subprocess
+          from datetime import datetime, timezone, timedelta
+
+          repo = os.environ["REPO"]
+          now = datetime.now(timezone.utc)
+          cutoff = now - timedelta(minutes=35)
+
+          # Determine which shift just ended based on current UTC hour
+          hour = now.hour
+          if hour == 0:
+              outgoing_shift = "Shift 4 (6pm-12am)"
+              incoming_shift = "Shift 1 (12am-6am)"
+              shift_label = "shift-4"
+          elif hour == 6:
+              outgoing_shift = "Shift 1 (12am-6am)"
+              incoming_shift = "Shift 2 (6am-12pm)"
+              shift_label = "shift-1"
+          elif hour == 12:
+              outgoing_shift = "Shift 2 (6am-12pm)"
+              incoming_shift = "Shift 3 (12pm-6pm)"
+              shift_label = "shift-2"
+          elif hour == 18:
+              outgoing_shift = "Shift 3 (12pm-6pm)"
+              incoming_shift = "Shift 4 (6pm-12am)"
+              shift_label = "shift-3"
+          else:
+              print(f"Unexpected run hour: {hour} — skipping")
+              exit(0)
+
+          date_str = now.strftime("%Y-%m-%d")
+
+          # Search for handoff tickets opened in the last 35 minutes
+          result = subprocess.run(
+              ["gh", "issue", "list",
+               "--repo", repo,
+               "--state", "all",
+               "--label", "type: shift-handoff",
+               "--limit", "20",
+               "--json", "number,title,createdAt,labels"],
+              capture_output=True, text=True, check=True
+          )
+
+          issues = json.loads(result.stdout)
+
+          # Check if any handoff was filed in the window
+          recent_handoffs = []
+          for issue in issues:
+              created = datetime.fromisoformat(issue["createdAt"].replace("Z", "+00:00"))
+              if created >= cutoff:
+                  recent_handoffs.append(issue)
+
+          if recent_handoffs:
+              print(f"✅ Handoff found for {outgoing_shift} → {incoming_shift} transition:")
+              for h in recent_handoffs:
+                  print(f"   #{h['number']}: {h['title']}")
+              exit(0)
+
+          # No handoff found — open a MISSING HANDOFF issue
+          print(f"❌ No handoff found for {outgoing_shift} → {incoming_shift} transition. Opening missing handoff issue.")
+
+          title = f"MISSING HANDOFF — {outgoing_shift} → {incoming_shift} | {date_str}"
+
+          body = f"""## :rotating_light: Missing Shift Handoff Detected
+
+**Transition:** {outgoing_shift} → {incoming_shift}
+**Expected by:** {cutoff.strftime('%Y-%m-%d %H:%M')} UTC
+**Checked at:** {now.strftime('%Y-%m-%d %H:%M')} UTC
+
+No shift handoff ticket was filed within 35 minutes of the shift transition.
+
+### Incoming Analyst — What To Do
+
+1. Check Discord for any async briefing from the outgoing analyst
+2. Manually review all open tracking cases in the project board
+3. Check tool health: Sentinel, MDE, MISP, honeypots, Tenable
+4. Document what you were able to reconstruct in a comment below
+5. Close this ticket once you have established situational awareness
+
+### Shift Lead — What To Do
+
+1. Ping the outgoing analyst on Discord to understand what happened
+2. Flag any active tracking cases that may have lost continuity
+3. Note in this ticket what was found and how coverage was re-established
+
+> This ticket was opened automatically by the Handoff Check workflow.
+> Persistent missing handoffs should be addressed in the team retrospective.
+"""
+
+          subprocess.run(
+              ["gh", "issue", "create",
+               "--repo", repo,
+               "--title", title,
+               "--body", body,
+               "--label", "type: tool-issue",
+               "--label", "severity: high"],
+              check=True
+          )
+
+          print(f"Missing handoff issue created for {outgoing_shift} → {incoming_shift}")
+          PYEOF

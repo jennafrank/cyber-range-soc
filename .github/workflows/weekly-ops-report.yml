@@ -1,0 +1,269 @@
+name: Weekly SOC Ops Report
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Every Monday at 09:00 UTC
+  workflow_dispatch:        # Allow manual trigger for testing
+
+permissions:
+  issues: write
+
+jobs:
+  weekly-report:
+    name: Generate and post weekly SOC operations report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Weekly SOC Ops Report
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 << 'PYEOF'
+          import json
+          import os
+          import subprocess
+          from datetime import datetime, timezone, timedelta
+          from collections import defaultdict
+
+          repo = os.environ["REPO"]
+          now = datetime.now(timezone.utc)
+          week_ago = now - timedelta(days=7)
+          week_ago_str = week_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
+          date_str = now.strftime("%Y-%m-%d")
+          week_start = week_ago.strftime("%Y-%m-%d")
+          week_end = now.strftime("%Y-%m-%d")
+
+          def run_gh(args):
+              result = subprocess.run(
+                  ["gh"] + args,
+                  capture_output=True, text=True, check=True
+              )
+              return json.loads(result.stdout)
+
+          # ── Fetch all issues from the past 7 days ────────────────
+          all_issues = run_gh([
+              "issue", "list",
+              "--repo", repo,
+              "--state", "all",
+              "--limit", "500",
+              "--json", "number,title,state,createdAt,closedAt,labels,comments,updatedAt",
+              "--search", f"created:>{week_ago_str}"
+          ])
+
+          # ── Fetch stale open issues (older than 72 hours) ────────
+          three_days_ago = now - timedelta(hours=72)
+          stale_issues = run_gh([
+              "issue", "list",
+              "--repo", repo,
+              "--state", "open",
+              "--limit", "200",
+              "--json", "number,title,createdAt,labels,updatedAt"
+          ])
+          stale = [
+              i for i in stale_issues
+              if datetime.fromisoformat(i["createdAt"].replace("Z", "+00:00")) < three_days_ago
+          ]
+
+          # ── Helper: get label names ──────────────────────────────
+          def get_labels(issue):
+              return [l["name"] for l in issue.get("labels", [])]
+
+          def get_ticket_type(issue):
+              labels = get_labels(issue)
+              for l in labels:
+                  if l.startswith("type: "):
+                      return l.replace("type: ", "")
+              return "unlabeled"
+
+          def get_severity(issue):
+              labels = get_labels(issue)
+              for l in labels:
+                  if l.startswith("severity: "):
+                      return l.replace("severity: ", "")
+              return None
+
+          def was_created_this_week(issue):
+              created = datetime.fromisoformat(issue["createdAt"].replace("Z", "+00:00"))
+              return created >= week_ago
+
+          def was_closed_this_week(issue):
+              if issue.get("closedAt"):
+                  closed = datetime.fromisoformat(issue["closedAt"].replace("Z", "+00:00"))
+                  return closed >= week_ago
+              return False
+
+          # ── Tickets opened this week by type ────────────────────
+          opened_this_week = [i for i in all_issues if was_created_this_week(i)]
+          by_type = defaultdict(int)
+          for issue in opened_this_week:
+              by_type[get_ticket_type(issue)] += 1
+
+          # ── Closed vs still open ─────────────────────────────────
+          closed_this_week = [i for i in all_issues if was_closed_this_week(i)]
+          still_open = [i for i in all_issues if i["state"] == "OPEN" and was_created_this_week(i)]
+
+          # ── Escalations ──────────────────────────────────────────
+          escalated_t2 = [
+              i for i in opened_this_week
+              if "status: escalated-to-josh" not in get_labels(i)
+              and any("escalat" in l.lower() and "t2" in l.lower() for l in get_labels(i))
+          ]
+          escalated_josh = [
+              i for i in all_issues
+              if "status: escalated-to-josh" in get_labels(i)
+              and was_created_this_week(i)
+          ]
+
+          # ── Shift handoffs filed vs expected ────────────────────
+          handoffs_filed = [
+              i for i in all_issues
+              if was_created_this_week(i)
+              and "type: shift-handoff" in get_labels(i)
+          ]
+          missing_handoffs = [
+              i for i in all_issues
+              if was_created_this_week(i)
+              and "MISSING HANDOFF" in i.get("title", "")
+          ]
+          expected_handoffs = 28  # 4 shifts/day × 7 days
+
+          # ── SLA breaches (comments containing "SLA WARNING") ────
+          sla_breaches = []
+          for issue in all_issues:
+              if was_created_this_week(issue):
+                  for comment in issue.get("comments", []):
+                      if "SLA WARNING" in comment.get("body", ""):
+                          sla_breaches.append(issue)
+                          break
+
+          # ── MITRE techniques ─────────────────────────────────────
+          # Extract from issue titles and bodies (best effort from labels)
+          mitre_labels = defaultdict(int)
+          for issue in all_issues:
+              if was_created_this_week(issue):
+                  for label in get_labels(issue):
+                      if label.startswith("att&ck: "):
+                          mitre_labels[label.replace("att&ck: ", "")] += 1
+
+          mitre_lines = ""
+          if mitre_labels:
+              sorted_mitre = sorted(mitre_labels.items(), key=lambda x: x[1], reverse=True)
+              mitre_lines = "\n".join([f"  - {k}: {v} ticket(s)" for k, v in sorted_mitre])
+          else:
+              mitre_lines = "  - No MITRE technique labels applied this week"
+
+          # ── Stale ticket list ────────────────────────────────────
+          stale_lines = ""
+          if stale:
+              stale_lines = "\n".join([
+                  f"  - #{i['number']}: {i['title'][:70]}"
+                  for i in stale[:15]
+              ])
+              if len(stale) > 15:
+                  stale_lines += f"\n  - ... and {len(stale) - 15} more"
+          else:
+              stale_lines = "  - No stale tickets"
+
+          # ── Type breakdown ───────────────────────────────────────
+          type_lines = "\n".join([
+              f"  - {k}: {v}" for k, v in sorted(by_type.items(), key=lambda x: x[1], reverse=True)
+          ]) or "  - No tickets opened this week"
+
+          # ── Build report body ─────────────────────────────────────
+          body = f"""## Weekly SOC Ops Report — {week_start} to {week_end}
+
+> Automated report generated every Monday at 09:00 UTC.
+> Covers the 7-day period ending {week_end}.
+
+---
+
+### Tickets Opened This Week by Type
+
+{type_lines}
+
+**Total opened:** {len(opened_this_week)}
+
+---
+
+### Ticket Resolution
+
+| Metric | Count |
+|--------|-------|
+| Opened this week | {len(opened_this_week)} |
+| Closed this week | {len(closed_this_week)} |
+| Still open (from this week) | {len(still_open)} |
+
+---
+
+### Escalations
+
+| Type | Count |
+|------|-------|
+| Escalated to T2 | {len(escalated_t2)} |
+| Escalated to Josh | {len(escalated_josh)} |
+
+---
+
+### Shift Handoffs
+
+| Metric | Count |
+|--------|-------|
+| Expected (4/day × 7 days) | {expected_handoffs} |
+| Filed | {len(handoffs_filed)} |
+| Missing handoff alerts triggered | {len(missing_handoffs)} |
+
+{"⚠️ **Handoff compliance below 100%.** Review missing handoff tickets and address in team retrospective." if len(handoffs_filed) < expected_handoffs else "✅ All expected handoffs were filed."}
+
+---
+
+### SLA Breaches
+
+Tickets that received an automated SLA WARNING comment this week: **{len(sla_breaches)}**
+
+{"".join([f"- #{i['number']}: {i['title'][:70]}" + chr(10) for i in sla_breaches[:10]]) if sla_breaches else "No SLA breaches this week."}
+
+---
+
+### Stale Open Tickets (older than 72 hours)
+
+{stale_lines}
+
+**Total stale:** {len(stale)}
+
+{"Shift Lead — please review stale tickets and assign or close them." if stale else ""}
+
+---
+
+### Top MITRE ATT&CK Techniques This Week
+
+{mitre_lines}
+
+---
+
+### Action Items for Shift Lead / SOC Lead
+
+- [ ] Review any missing handoffs and follow up with responsible analysts
+- [ ] Review SLA breaches and identify patterns
+- [ ] Assign or close stale tickets
+- [ ] Share this report in Discord for team visibility
+
+---
+
+> This report was generated automatically by the `weekly-ops-report` GitHub Actions workflow.
+> Data accuracy depends on consistent label use and ticket hygiene.
+> If labels are missing or incorrect, update tickets and the next report will reflect it.
+"""
+
+          title = f"Weekly SOC Ops Report — {date_str}"
+
+          subprocess.run(
+              ["gh", "issue", "create",
+               "--repo", repo,
+               "--title", title,
+               "--body", body,
+               "--label", "type: deliverable"],
+              check=True
+          )
+
+          print(f"Weekly report created: {title}")
+          PYEOF
