@@ -1,0 +1,154 @@
+# cyber-range-soc GitHub Labels
+# Organized by category. Use setup-labels.sh to apply these to the repo.
+
+# ──────────────────────────────────────────────
+# SEVERITY
+# ──────────────────────────────────────────────
+
+- name: "severity: critical"
+  color: "B60205"
+  description: "Active high-value attacker behavior requiring immediate documentation"
+
+- name: "severity: high"
+  color: "E4801A"
+  description: "Significant post-compromise activity worth deep investigation"
+
+- name: "severity: medium"
+  color: "FBCA04"
+  description: "Interesting attacker behavior worth documenting"
+
+- name: "severity: low"
+  color: "0E8A16"
+  description: "Routine activity, low investigative priority"
+
+# ──────────────────────────────────────────────
+# TYPE
+# ──────────────────────────────────────────────
+
+- name: "type: tracking-case"
+  color: "5319E7"
+  description: "Active attacker behavior being followed"
+
+- name: "type: shift-handoff"
+  color: "0075CA"
+  description: "Shift transition ticket"
+
+- name: "type: deliverable"
+  color: "006B75"
+  description: "Phase deliverable task"
+
+- name: "type: tool-issue"
+  color: "666666"
+  description: "Infrastructure or tool problem"
+
+# ──────────────────────────────────────────────
+# TEAM
+# ──────────────────────────────────────────────
+
+- name: "team: detection-eng"
+  color: "B60205"
+  description: "Detection Engineering team"
+
+- name: "team: tracking-ir"
+  color: "5319E7"
+  description: "Tracking & Incident Response team"
+
+- name: "team: threat-intel"
+  color: "0075CA"
+  description: "Threat Intelligence team"
+
+- name: "team: infra"
+  color: "24292E"
+  description: "Infrastructure & Tooling team"
+
+- name: "team: mini-soc"
+  color: "006B75"
+  description: "Mini SOC Honeypot Team"
+
+- name: "team: process-docs"
+  color: "795548"
+  description: "Process & Documentation team"
+
+# ──────────────────────────────────────────────
+# STATUS
+# ──────────────────────────────────────────────
+
+- name: "status: new"
+  color: "C5DEF5"
+  description: "Newly opened, not yet assigned or started"
+
+- name: "status: in-progress"
+  color: "FEF2C0"
+  description: "Actively being worked"
+
+- name: "status: needs-review"
+  color: "F9D0C4"
+  description: "Work complete, awaiting review"
+
+- name: "status: done"
+  color: "C2E0C6"
+  description: "Completed and closed"
+
+- name: "status: escalated-to-josh"
+  color: "B60205"
+  description: "Escalated to lead for decision or action"
+
+# ──────────────────────────────────────────────
+# PHASE
+# ──────────────────────────────────────────────
+
+- name: "phase: 1"
+  color: "EDEDED"
+  description: "Phase 1 deliverable"
+
+- name: "phase: 2"
+  color: "EDEDED"
+  description: "Phase 2 deliverable"
+
+- name: "phase: 3"
+  color: "EDEDED"
+  description: "Phase 3 deliverable"
+
+- name: "phase: 4"
+  color: "EDEDED"
+  description: "Phase 4 deliverable"
+
+- name: "phase: 5"
+  color: "EDEDED"
+  description: "Phase 5 deliverable"
+
+# ──────────────────────────────────────────────
+# MITRE ATT&CK STAGE
+# ──────────────────────────────────────────────
+
+- name: "att&ck: initial-access"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Initial Access (TA0001)"
+
+- name: "att&ck: execution"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Execution (TA0002)"
+
+- name: "att&ck: persistence"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Persistence (TA0003)"
+
+- name: "att&ck: lateral-movement"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Lateral Movement (TA0008)"
+
+- name: "att&ck: exfiltration"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Exfiltration (TA0010)"
+
+- name: "att&ck: command-and-control"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Command and Control (TA0011)"
+
+- name: "att&ck: defense-evasion"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Defense Evasion (TA0005)"
+
+- name: "att&ck: credential-access"
+  color: "1D1D1D"
+  description: "MITRE ATT&CK — Credential Access (TA0006)"
