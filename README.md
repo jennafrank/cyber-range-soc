@@ -122,6 +122,14 @@ No exceptions. If you did something, open a ticket.
 
 ---
 
+## Project Board
+
+Track all active work across the SOC — open cases, deliverables in progress, escalations, and completed tickets:
+
+→ [SOC Operations Board](https://github.com/users/jennafrank/projects/3)
+
+---
+
 ## Contributing
 
 This project runs on volunteer effort. Every contribution — a detection rule, a documented process, an analyzed honeypot session, a fixed typo — moves the mission forward.
