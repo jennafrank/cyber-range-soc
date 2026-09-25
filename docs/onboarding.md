@@ -116,7 +116,7 @@ T2s have demonstrated they understand the environment and can work independently
 Shift Leads are responsible for the whole shift — not just their own work.
 
 **What you do:**
-- Check the SOCOPS board at the start of every shift
+- Check the Tier 1 and Tier 2 boards at the start of every shift
 - Ensure active tracking cases have eyes on them
 - Verify handoffs are complete and incoming analysts are briefed
 - Flag tool issues, escalations, and anything needing leadership attention
@@ -160,7 +160,7 @@ Before you do anything else on your first shift, complete these:
 - [ ] Check tool health (Sentinel, MDE, MISP, honeypots, Tenable) — note anything flagged as degraded
 - [ ] Introduce yourself in Discord in your shift channel if you have not already
 - [ ] Find your Shift Lead and confirm you are present and ready
-- [ ] Open the SOCOPS board and orient yourself: what is in Intake, Triage, Investigation, and Advisory
+- [ ] Open both boards and orient yourself: what is waiting on the Tier 1 board (New, Triaged, Promoted) and on the Tier 2 board (Intake, Triage, Investigation, Advisory)
 - [ ] Identify one task or tracking case you will focus on this shift — do not try to do everything
 - [ ] Leave a receipt on the Shift Handoff record confirming you received the brief
 

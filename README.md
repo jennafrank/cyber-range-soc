@@ -69,7 +69,8 @@ flowchart LR
     C --> D["Compose alert,<br/>description, dedup key"]
     D --> E["Key Vault<br/>get secret"]
     E -->|HTTP| F["Jira case"]
-    F --> G["SOCOPS board<br/>Intake → Triage → Investigation → Advisory → Done"]
+    F --> G["Tier 1 board<br/>New → Triaged → Promoted → Done"]
+    G -->|promoted| H["Tier 2 board<br/>Intake → Triage → Investigation → Advisory → Done"]
 ```
 
 ---
@@ -91,10 +92,10 @@ flowchart LR
 ![Defender incident SOC-BUILD-IMPACT-RANSOMNOTE-T1491.001, High severity, tagged jira-sent and soc-build-owned](docs/images/02-defender-incident-ransomnote-t1491.png)
 <sub>A SOC-built ransom note detection (T1491.001) with its case filed. User details redacted.</sub>
 
-**4. The case enters the queue.** New tickets land in status New, in the Intake column of the SOCOPS board, and move through Triage, Investigation, Advisory, and Done.
+**4. The case enters the Tier 1 queue.** Alert Cases land on the Tier 1 board in New. Tier 1 triages each one, and cases that need deeper work are promoted to Tier 2, whose board runs Intake, Triage, Investigation, Advisory, and Done.
 
-![Jira Alert Cases board for the SOCOPS queue](docs/images/03-jira-alert-case-queue.png)
-<sub>The alert case queue on the SOCOPS board. One title still shows an unfilled field (`_ShortHost_`); I traced that to the Logic App and detections not passing host and count values, and fixed both.</sub>
+![Tier 1 Jira Alert Cases board with New, Triaged, Promoted and Done columns](docs/images/03-jira-alert-case-queue.png)
+<sub>The Tier 1 Alert Cases board: New, Triaged, Promoted, Done. One title still shows an unfilled field (`_ShortHost_`); I traced that to the Logic App and detections not passing host and count values, and fixed both.</sub>
 
 **5. An analyst investigates.** Tier 2 analysts follow a guided investigation that ends in a recommendation, not an action.
 

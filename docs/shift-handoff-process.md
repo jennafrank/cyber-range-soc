@@ -185,11 +185,13 @@ If you consistently struggle to complete handoffs, talk to your Shift Lead about
 
 ---
 
-## 9. How Shift Leads Use the SOCOPS Board
+## 9. How Shift Leads Use the Boards
 
-At the start of every shift, the Shift Lead checks the SOCOPS board before doing anything else.
+At the start of every shift, the Shift Lead checks both boards before doing anything else.
 
-- **Columns:** Intake, Triage, Investigation, Advisory, Done. Look for cases piling up in any one column.
+- **Tier 1 board (Alert Cases):** New, Triaged, Promoted, Done. Look for Alert Cases sitting in New without a first look.
+
+- **Tier 2 board columns:** Intake, Triage, Investigation, Advisory, Done. Look for cases piling up in any one column.
 - **Swimlanes:** start with **Expedite**, then **Security Case**, then **Alert Queue**.
 - **Quick filters:**
   - **Needs triage:** anything waiting for a first look.
