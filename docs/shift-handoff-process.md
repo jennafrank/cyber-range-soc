@@ -45,7 +45,7 @@ A handoff has two parts.
 | **SOC - Handoff Summary** | What changed this shift, what you checked, and what you ruled out |
 | **SOC - Next Action** | The single next step the incoming analyst should take |
 | **SOC - Next Review Date** | When the case must be looked at again |
-| **SOC - Ownership Accepted** | Set by the incoming analyst when they take the case over [CONFIRM] |
+| **SOC - Ownership Accepted** | Set by the incoming analyst when they take the case over |
 
 **Once per shift**, open a **Shift Handoff** record. It is a cross-case record, not a child of any one case: it covers the whole shift and points to every case being handed over.
 
@@ -162,7 +162,7 @@ Your first task on shift is the handoff: not Sentinel, not Discord, not email.
 1. **Read the Shift Handoff record** from start to finish.
 2. **Open every case it lists.** Read SOC - Current Summary, SOC - Handoff Summary, and SOC - Next Action, then the case history.
 3. **Check tool health.** If anything was flagged as degraded, verify it before you start.
-4. **Take ownership.** Set **SOC - Ownership Accepted** on each case you pick up. [CONFIRM]
+4. **Take ownership.** Set **SOC - Ownership Accepted** on each case you pick up.
 5. **Leave a receipt** on the Shift Handoff record:
 
    > "Bravo online as of 06:05 UTC. Reviewed handoff and active cases. Picking up SOCOPS-XXX; first update this shift."
