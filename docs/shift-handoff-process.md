@@ -189,7 +189,7 @@ At the start of every shift, the Shift Lead checks the project board before doin
 
 **Open tracking cases** — How many are active? Are they assigned? Has anything gone cold that should be closed?
 
-**Escalated tickets** — Anything marked `status: escalated-to-josh` that has not been addressed. If yes, ping Josh on Discord with a link.
+**Escalated tickets:** anything marked `status: escalated-to-soc-lead` that has not been addressed. If yes, ping the SOC Lead on Discord with a link.
 
 **Tool issues** — Anything in the In Progress column tagged `type: tool-issue`. If a tool is degraded, the Shift Lead confirms whether it is still an issue and pings Infra if needed.
 

@@ -89,7 +89,7 @@
   color: "C2E0C6"
   description: "Completed and closed"
 
-- name: "status: escalated-to-josh"
+- name: "status: escalated-to-soc-lead"
   color: "B60205"
   description: "Escalated to lead for decision or action"
 

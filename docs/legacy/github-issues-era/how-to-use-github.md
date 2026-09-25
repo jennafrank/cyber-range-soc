@@ -8,7 +8,7 @@ Read this once. Keep it bookmarked. You will probably not need it after your fir
 
 ## 1. Why We Use GitHub
 
-The Cyber Range SOC runs 24/7 across four shift rotations and 100+ volunteers. That means at any given moment, someone is handing off to someone else, picking up a case mid-stream, or starting fresh with no context.
+The Cyber Range SOC runs across four shift rotations with about 50 builders and 15 leaders. That means at any given moment, someone is handing off to someone else, picking up a case mid-stream, or starting fresh with no context.
 
 GitHub is how we make sure nothing gets lost.
 
@@ -137,9 +137,9 @@ Check the board at the start of your shift to see what is active across the whol
 
 ---
 
-## 8. Escalate to Josh
+## 8. Escalate to the SOC Lead
 
-`status: escalated-to-josh` is a special label that means: this ticket needs a decision or action from Josh that the team cannot resolve on their own.
+`status: escalated-to-soc-lead` is a special label that means: this ticket needs a decision or action from the SOC Lead that the team cannot resolve on their own.
 
 **When to use it:**
 
@@ -150,11 +150,11 @@ Check the board at the start of your shift to see what is active across the whol
 
 **Who can apply it:**
 
-Anyone. If you think something needs to go to Josh, apply the label and leave a comment explaining why. Do not sit on it waiting for permission.
+Anyone. If you think something needs to go to the SOC Lead, apply the label and leave a comment explaining why. Do not sit on it waiting for permission.
 
 **What to do after applying it:**
 
-Ping Josh directly on Discord with a link to the ticket. The label alone may not get his attention quickly enough. The label creates the record; the Discord message creates the urgency.
+Ping the SOC Lead directly on Discord with a link to the ticket. The label alone may not get their attention quickly enough. The label creates the record; the Discord message creates the urgency.
 
 ---
 

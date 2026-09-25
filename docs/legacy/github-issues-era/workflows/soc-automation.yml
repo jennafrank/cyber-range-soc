@@ -252,17 +252,17 @@ EOF
 )"
 
   # ─────────────────────────────────────────────────────────────
-  # ESCALATION TO JOSH — comment trigger
+  # ESCALATION TO SOC LEAD: comment trigger
   # ─────────────────────────────────────────────────────────────
-  escalate-to-josh-comment:
-    name: Escalation to Josh — comment trigger
+  escalate-to-soc-lead-comment:
+    name: Escalation to SOC Lead: comment trigger
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'issue_comment' &&
       github.event.action == 'created' &&
-      contains(toLower(github.event.comment.body), 'escalating to josh')
+      contains(toLower(github.event.comment.body), 'escalating to soc lead')
     steps:
-      - name: Apply escalated-to-josh label
+      - name: Apply escalated-to-soc-lead label
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
@@ -270,9 +270,9 @@ EOF
         run: |
           gh issue edit "$ISSUE_NUMBER" \
             --repo "$REPO" \
-            --add-label "status: escalated-to-josh"
+            --add-label "status: escalated-to-soc-lead"
 
-      - name: Update project Status to Escalated to Josh
+      - name: Update project Status to Escalated to SOC Lead
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
@@ -289,7 +289,7 @@ EOF
             }' -f issue="$ISSUE_NODE_ID" \
             --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOCQvypM4BZJLu") | .id')
 
-          # Status = Escalated to Josh (option ID: 3fe52f8f)
+          # Status = Escalated to SOC Lead (option ID: 3fe52f8f)
           gh api graphql -f query='
             mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
               updateProjectV2ItemFieldValue(input: {
@@ -313,26 +313,26 @@ EOF
           gh issue comment "$ISSUE_NUMBER" \
             --repo "$REPO" \
             --body "$(cat <<'EOF'
-:rotating_light: **SOC Lead escalation triggered. Status updated to Escalated to Josh.**
+:rotating_light: **SOC Lead escalation triggered. Status updated to Escalated to SOC Lead.**
 
-This ticket has been flagged for SOC Lead attention. The analyst who escalated this should also send a direct Discord message to Josh with a link to this ticket.
+This ticket has been flagged for SOC Lead attention. The analyst who escalated this should also send a direct Discord message to the SOC Lead with a link to this ticket.
 
 > The label creates the record. The Discord message creates the urgency.
 EOF
 )"
 
   # ─────────────────────────────────────────────────────────────
-  # ESCALATION TO JOSH — label trigger
+  # ESCALATION TO SOC LEAD: label trigger
   # ─────────────────────────────────────────────────────────────
-  escalate-to-josh-label:
-    name: Escalation to Josh — label trigger
+  escalate-to-soc-lead-label:
+    name: Escalation to SOC Lead: label trigger
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'issues' &&
       github.event.action == 'labeled' &&
-      github.event.label.name == 'status: escalated-to-josh'
+      github.event.label.name == 'status: escalated-to-soc-lead'
     steps:
-      - name: Update project Status to Escalated to Josh
+      - name: Update project Status to Escalated to SOC Lead
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
@@ -372,9 +372,9 @@ EOF
           gh issue comment "$ISSUE_NUMBER" \
             --repo "$REPO" \
             --body "$(cat <<'EOF'
-:rotating_light: **SOC Lead escalation triggered via label. Status updated to Escalated to Josh.**
+:rotating_light: **SOC Lead escalation triggered via label. Status updated to Escalated to SOC Lead.**
 
-Ping Josh directly on Discord with a link to this ticket. Do not wait for him to find it.
+Ping the SOC Lead directly on Discord with a link to this ticket. Do not wait for them to find it.
 EOF
 )"
 
