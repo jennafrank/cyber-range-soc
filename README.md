@@ -16,8 +16,6 @@ Pacific Watch is an advisory-only security operations center that I built and ru
 
 **Jenna Frank, Security Operations Manager.** I built the SOC and run it.
 
-> Draft for review. Items marked [CONFIRM] need a check before this goes public.
-
 **Designed**
 - The Jira case workflow: Triage → Investigation → Advisory → Archived.
 - The escalation path, from analyst to Shift Lead to SOC Lead.
@@ -109,10 +107,8 @@ flowchart LR
 
 ## Selected case studies
 
-- [01: The 316-case queue flood](docs/case-studies/01-queue-flood-316-cases.md). Unthresholded TEST brute-force rules flooded Jira; the rules were paused, the queue cleared in 24 hours, and the fix became a promotion requirement.
-- [02: Expected activity that wasn't](docs/case-studies/02-expected-activity-that-wasnt.md). Activity assumed to be an authorized simulation, questioned, investigated, and dispositioned. (Draft)
-- [03: SSH brute force to SYSTEM-level persistence](docs/case-studies/03-ssh-brute-force-system-persistence.md). A confirmed breach of a honeypot, investigated and reported under the advisory-only boundary. (Draft)
-- [Sample incident report](docs/examples/sample-incident-report.md). How findings are written for a non-security reader who has to act on them. (Draft)
+- [01: The 316-case queue flood](docs/case-studies/01-queue-flood-316-cases.md). Unthresholded test rules flooded the queue at about 290 alerts a day; the rules were paused, the queue was clear in 24 hours, and the fix became a promotion requirement.
+- [02: Suspicious enumeration that was an exercise](docs/case-studies/02-suspicious-enumeration-exercise.md). Scripted domain enumeration first looked like a participant's account; it was a staged scenario persona, confirmed with the scenario owner and dispositioned as Authorized Simulated Activity.
 
 ---
 

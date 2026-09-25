@@ -1,6 +1,6 @@
 # Escalation matrix
 
-Knowing who needs a case, and what they need to act on it, is part of the job. This matrix is drawn from [rules-of-engagement.md](rules-of-engagement.md), [onboarding.md](onboarding.md), and [shift-handoff-process.md](shift-handoff-process.md). Rows marked [CONFIRM] are not backed by those docs yet.
+Knowing who needs a case, and what they need to act on it, is part of the job. This matrix is drawn from [rules-of-engagement.md](rules-of-engagement.md), [onboarding.md](onboarding.md), and [shift-handoff-process.md](shift-handoff-process.md).
 
 **Review cadence:** there are no formal SLAs. The SOC runs on Jira Software Standard, which has no SLA engine, so each case carries a `SOC - Next Review Date` instead of a time target.
 
