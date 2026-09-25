@@ -93,8 +93,8 @@ flowchart LR
 
 **4. The case enters the queue.** New tickets land in status New, in the Intake column of the SOCOPS board, and move through Triage, Investigation, Advisory, and Done.
 
-![Jira Alert Cases board with NEW, TRIAGED, PROMOTED and DONE columns](docs/images/03-jira-alert-case-queue.png)
-<sub>An earlier version of the alert case board, before its columns became Intake / Triage / Investigation / Advisory / Done. Some titles here still show unfilled fields (`_ShortHost_`, `_PrimaryCount_`); I traced that to the Logic App and detections not passing host and count values, and fixed both.</sub>
+![Jira Alert Cases board for the SOCOPS queue](docs/images/03-jira-alert-case-queue.png)
+<sub>The alert case queue on the SOCOPS board. One title still shows an unfilled field (`_ShortHost_`); I traced that to the Logic App and detections not passing host and count values, and fixed both.</sub>
 
 **5. An analyst investigates.** Tier 2 analysts follow a guided investigation that ends in a recommendation, not an action.
 
