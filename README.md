@@ -17,7 +17,7 @@ Pacific Watch is an advisory-only security operations center that I built and ru
 **Jenna Frank, Security Operations Manager.** I built the SOC and run it.
 
 **Designed**
-- The Jira case workflow: Triage → Investigation → Advisory → Archived.
+- The Jira case workflow and board.
 - The escalation path, from analyst to Shift Lead to SOC Lead.
 - The four-shift handoff ("baton-pass") process, so a case keeps moving across shifts without being rebuilt.
 - The case-disposition taxonomy, the seven values of the `SOC - Disposition` field: True Positive – Malicious, Authorized Participant Activity, Authorized Simulated Activity, False Positive, Benign Positive, Insufficient Evidence, and Duplicate. Disposition and Triage Note are the only two fields an analyst enters on an Alert Case.
@@ -69,7 +69,7 @@ flowchart LR
     C --> D["Compose alert,<br/>description, dedup key"]
     D --> E["Key Vault<br/>get secret"]
     E -->|HTTP| F["Jira case"]
-    F --> G["Analyst queue<br/>Triage → Investigation → Advisory → Archived"]
+    F --> G["SOCOPS board<br/>Intake → Triage → Investigation → Advisory → Done"]
 ```
 
 ---
@@ -91,10 +91,10 @@ flowchart LR
 ![Defender incident SOC-BUILD-IMPACT-RANSOMNOTE-T1491.001, High severity, tagged jira-sent and soc-build-owned](docs/images/02-defender-incident-ransomnote-t1491.png)
 <sub>A SOC-built ransom note detection (T1491.001) with its case filed. User details redacted.</sub>
 
-**4. The case enters the queue.** New cases are triaged, and the ones that need action are promoted.
+**4. The case enters the queue.** New tickets land in status New, in the Intake column of the SOCOPS board, and move through Triage, Investigation, Advisory, and Done.
 
 ![Jira Alert Cases board with NEW, TRIAGED, PROMOTED and DONE columns](docs/images/03-jira-alert-case-queue.png)
-<sub>The alert case queue. Some titles here still show unfilled fields (`_ShortHost_`, `_PrimaryCount_`); I traced that to the Logic App and detections not passing host and count values, and fixed both.</sub>
+<sub>An earlier version of the alert case board, before its columns became Intake / Triage / Investigation / Advisory / Done. Some titles here still show unfilled fields (`_ShortHost_`, `_PrimaryCount_`); I traced that to the Logic App and detections not passing host and count values, and fixed both.</sub>
 
 **5. An analyst investigates.** Tier 2 analysts follow a guided investigation that ends in a recommendation, not an action.
 

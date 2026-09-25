@@ -24,7 +24,7 @@ Why? Because the most valuable thing you can learn as a security analyst is what
 
 That is what you will see here.
 
-About 50 builders and 15 leaders across six teams keep this SOC running. The range runs on Microsoft Azure with up to 1,500 virtual machines. There are five phases of work and 150+ deliverables. It is ambitious. It is real. And it is the kind of experience that genuinely changes how you think about security.
+About 50 builders and 15 leaders across six teams keep this SOC running. The range runs on Microsoft Azure with up to 1,500 virtual machines. It is ambitious. It is real. And it is the kind of experience that genuinely changes how you think about security.
 
 Welcome to it.
 

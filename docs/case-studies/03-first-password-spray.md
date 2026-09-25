@@ -7,7 +7,7 @@
 
 ## Summary
 
-A password spray detection built for always-on Linux assets was backtested, deployed with a bake period, and fired for real on Jul 19, 2026 against `linux-target-1`, an always-on instructor asset. The pipeline created case SOCOPS-327: 101 attempts, 38 distinct accounts, 12 source addresses. [FILL IN: outcome and recommendation, one sentence]
+A password spray detection built for always-on Linux assets was backtested, deployed, validated through the pipeline, and fired for real on Jul 19, 2026 against `linux-target-1`, an always-on instructor asset. The pipeline created case SOCOPS-327: 101 attempts, 38 distinct accounts, 12 source addresses. [FILL IN: outcome and recommendation, one sentence]
 
 ## The detection
 
@@ -26,11 +26,13 @@ A password spray detection built for always-on Linux assets was backtested, depl
 | When | Event |
 |---|---|
 | [FILL IN] | Backtest against the known spike |
-| Jul 18, 2026 | Rule deployed, alerts only, for a 48-hour bake before the Logic App was connected |
+| Jul 18, 2026 | Rule deployed with a planned 48-hour alerts-only bake |
+| Jul 18, 2026 | Logic App connected to validate the pipeline end to end |
+| Jul 18, 2026, 21:38:36 | Tuned rule fired; pipeline created SOCOPS-320, the first correctly typed Alert Case |
 | Jul 19, 2026 | Rule fired on `linux-target-1`; pipeline created SOCOPS-327 |
 | [FILL IN] | [FILL IN: triage, investigation, advisory sent] |
 
-[CONFIRM: a 48-hour bake starting Jul 18 would end Jul 20, but the pipeline created SOCOPS-327 on Jul 19. Was the bake shortened, or did the case come from a different path?]
+The planned 48-hour alerts-only bake was shortened so the pipeline could be validated end to end.
 
 ## Evidence
 

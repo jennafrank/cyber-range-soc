@@ -66,9 +66,9 @@ On Alert Cases, the two fields an analyst enters are **SOC - Disposition** and *
 
 ## 4. When to Start the Handoff
 
-**Start the handoff 30 minutes before your shift ends. Not after. Not when the incoming analyst shows up. Before.**
+**Start the handoff before your shift ends. Not after. Not when the incoming analyst shows up. Before.**
 
-The last 30 minutes of your shift are for writing the handoff, not for opening new investigations. Use them to:
+The end of your shift is for writing the handoff, not for opening new investigations. Use that time to:
 
 - Update the handoff fields on each case you own
 - Open the Shift Handoff record
@@ -165,7 +165,7 @@ Your first task on shift is the handoff: not Sentinel, not Discord, not email.
 4. **Take ownership.** Set **SOC - Ownership Accepted** on each case you pick up. [CONFIRM]
 5. **Leave a receipt** on the Shift Handoff record:
 
-   > "Bravo online as of 06:05 UTC. Reviewed handoff and active cases. Picking up SOCOPS-XXX; first update within 30 minutes."
+   > "Bravo online as of 06:05 UTC. Reviewed handoff and active cases. Picking up SOCOPS-XXX; first update this shift."
 
 If anything is unclear, ask in Discord right away. The outgoing analyst may still be around.
 
@@ -175,7 +175,7 @@ If anything is unclear, ask in Discord right away. The outgoing analyst may stil
 
 Handoffs are not optional.
 
-**Shift Lead flags it.** If no Shift Handoff record exists 15 minutes into the new shift, the Shift Lead posts in Discord and pings the outgoing analyst.
+**Shift Lead flags it.** If no Shift Handoff record exists at the start of the new shift, the Shift Lead posts in Discord and pings the outgoing analyst.
 
 **Incoming analyst posts a gap notice.** Open a Shift Handoff record yourself and note that no handoff was received. Reconstruct what you can from the open cases' handoff fields, recent Sentinel alerts, and tool status.
 
@@ -198,7 +198,7 @@ At the start of every shift, the Shift Lead checks the SOCOPS board before doing
 - **Escalations:** anything escalated to the SOC Lead that has not been addressed. Ping the SOC Lead on Discord with a link.
 - **Tool issues:** any open tool ticket. Confirm whether the issue is still live and ping Infrastructure if needed.
 
-This check should take 10 to 15 minutes. It is how the Shift Lead keeps situational awareness across the SOC.
+This check is how the Shift Lead keeps situational awareness across the SOC.
 
 ---
 
