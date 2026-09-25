@@ -8,7 +8,7 @@ Read this once. Keep it bookmarked. You will probably not need it after your fir
 
 ## 1. Why We Use GitHub
 
-The Cyber Range SOC runs 24/7 across four shift rotations and 100+ volunteers. That means at any given moment, someone is handing off to someone else, picking up a case mid-stream, or starting fresh with no context.
+The Cyber Range SOC runs across four shift rotations with about 50 builders and 15 leaders. That means at any given moment, someone is handing off to someone else, picking up a case mid-stream, or starting fresh with no context.
 
 GitHub is how we make sure nothing gets lost.
 

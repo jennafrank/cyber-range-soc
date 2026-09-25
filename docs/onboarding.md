@@ -2,7 +2,7 @@
 
 Hey. I am genuinely glad you are here.
 
-What you are about to step into is something most people in cybersecurity never get access to — a real, live security operations center running on a real enterprise environment with real attacker activity. Not a simulation. Not a lab with scripted scenarios. Real post-compromise behavior from real threat actors, documented by a volunteer team operating around the clock.
+What you are about to step into is something most people in cybersecurity never get access to — a real, live security operations center running on a real enterprise environment with real attacker activity. Not a simulation. Not a lab with scripted scenarios. Real post-compromise behavior from real threat actors, documented by a team working across four shifts.
 
 That is what we built. And you get to be part of it.
 
@@ -24,7 +24,7 @@ Why? Because the most valuable thing you can learn as a security analyst is what
 
 That is what you will see here.
 
-Over 100 volunteers across six teams work part-time (3-5 hours per week) to keep this SOC running 24/7. The range runs on Microsoft Azure with 2,000+ virtual machines. There are five phases of work and 150+ deliverables. It is ambitious. It is real. And it is the kind of experience that genuinely changes how you think about security.
+About 50 builders and 15 leaders across six teams keep this SOC running. The range runs on Microsoft Azure with up to 1,500 virtual machines. There are five phases of work and 150+ deliverables. It is ambitious. It is real. And it is the kind of experience that genuinely changes how you think about security.
 
 Welcome to it.
 

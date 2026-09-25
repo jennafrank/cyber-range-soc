@@ -4,7 +4,7 @@
 
 # cyber-range-soc
 
-Welcome to the **Cyber Range SOC** — a volunteer-powered, real-world security operations center built on a live, intentionally vulnerable environment. This is where analysts learn by doing, not by simulating.
+Welcome to the **Cyber Range SOC**, a real-world security operations center built on a live, intentionally vulnerable environment. This is where analysts learn by doing, not by simulating.
 
 ---
 
@@ -130,7 +130,7 @@ The SOC runs **24/7** across four shift rotations:
 
 - **Alpha** | **Bravo** | **Charlie** | **Delta**
 
-Shifts are staffed by volunteers contributing **3–5 hours per week**. We currently have **100+ contributors** across all teams and time zones.
+The team is about **50 builders and 15 leaders** across all teams and time zones.
 
 Every analyst operates at one of three levels:
 
@@ -169,7 +169,7 @@ No exceptions. If you did something, open a ticket.
 
 ## Contributing
 
-This project runs on volunteer effort. Every contribution — a detection rule, a documented process, an analyzed honeypot session, a fixed typo — moves the mission forward.
+This project runs on the team's effort. Every contribution (a detection rule, a documented process, an analyzed honeypot session, a fixed typo) moves the mission forward.
 
 When you are ready to contribute:
 1. Browse open Jira tickets and find something that matches your skills or interests
