@@ -83,7 +83,7 @@ create_label "status: new"               "C5DEF5" "Newly opened, not yet assigne
 create_label "status: in-progress"       "FEF2C0" "Actively being worked"
 create_label "status: needs-review"      "F9D0C4" "Work complete, awaiting review"
 create_label "status: done"              "C2E0C6" "Completed and closed"
-create_label "status: escalated-to-josh" "B60205" "Escalated to lead for decision or action"
+create_label "status: escalated-to-soc-lead" "B60205" "Escalated to lead for decision or action"
 
 # ──────────────────────────────────────────────
 # PHASE

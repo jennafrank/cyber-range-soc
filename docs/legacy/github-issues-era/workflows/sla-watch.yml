@@ -92,7 +92,7 @@ jobs:
 
 This ticket has been open for **{int(age_minutes)} minutes**. The SLA for Critical severity is **15 minutes**.
 
-Assign this ticket immediately and update the status. If this requires escalation, apply `status: escalated-to-josh` and ping Josh on Discord now.
+Assign this ticket immediately and update the status. If this requires escalation, apply `status: escalated-to-soc-lead` and ping the SOC Lead on Discord now.
 
 > _Automated SLA check fired at {now.strftime('%Y-%m-%d %H:%M')} UTC_""")
                   print(f"SLA WARNING posted: #{number} (Critical, {int(age_minutes)}m old)")

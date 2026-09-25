@@ -105,12 +105,12 @@ jobs:
           # ── Escalations ──────────────────────────────────────────
           escalated_t2 = [
               i for i in opened_this_week
-              if "status: escalated-to-josh" not in get_labels(i)
+              if "status: escalated-to-soc-lead" not in get_labels(i)
               and any("escalat" in l.lower() and "t2" in l.lower() for l in get_labels(i))
           ]
-          escalated_josh = [
+          escalated_soc_lead = [
               i for i in all_issues
-              if "status: escalated-to-josh" in get_labels(i)
+              if "status: escalated-to-soc-lead" in get_labels(i)
               and was_created_this_week(i)
           ]
 
@@ -200,7 +200,7 @@ jobs:
 | Type | Count |
 |------|-------|
 | Escalated to T2 | {len(escalated_t2)} |
-| Escalated to Josh | {len(escalated_josh)} |
+| Escalated to SOC Lead | {len(escalated_soc_lead)} |
 
 ---
 

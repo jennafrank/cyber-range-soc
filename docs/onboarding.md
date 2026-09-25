@@ -2,7 +2,7 @@
 
 Hey. I am genuinely glad you are here.
 
-What you are about to step into is something most people in cybersecurity never get access to — a real, live security operations center running on a real enterprise environment with real attacker activity. Not a simulation. Not a lab with scripted scenarios. Real post-compromise behavior from real threat actors, documented by a team working across four shifts.
+What you are about to step into is something most people in cybersecurity never get access to: a real, live security operations center running on a real enterprise environment with real attacker activity. Not a simulation. Not a lab with scripted scenarios. Real post-compromise behavior from real threat actors, documented by a team working across four shifts.
 
 That is what we built. And you get to be part of it.
 
@@ -24,7 +24,7 @@ Why? Because the most valuable thing you can learn as a security analyst is what
 
 That is what you will see here.
 
-About 50 builders and 15 leaders across six teams keep this SOC running. The range runs on Microsoft Azure with up to 1,500 virtual machines. There are five phases of work and 150+ deliverables. It is ambitious. It is real. And it is the kind of experience that genuinely changes how you think about security.
+About 50 builders and 15 leaders across six teams keep this SOC running. The range runs on Microsoft Azure with up to 1,500 virtual machines. It is ambitious. It is real. And it is the kind of experience that genuinely changes how you think about security.
 
 Welcome to it.
 
@@ -62,7 +62,7 @@ Discord is where the SOC lives. Shift coordination, tool alerts, quick questions
 You will need a Gmail address to access shared Google Workspace resources — shift documents, tracking sheets, and collaborative materials. Find the point person in the Skool community and DM them your Gmail. Do not skip this step — you will need access before your first shift.
 
 **Step 3 — Claim your role in the Phase 1 signup post**
-Head to the Skool community and find the Phase 1 signup post. Claim the role and team that fits where you want to contribute. This is how you get added to the right GitHub team, the right Discord channels, and the right shift rotation.
+Head to the Skool community and find the Phase 1 signup post. Claim the role and team that fits where you want to contribute. This is how you get added to the right team, the right Discord channels, and the right shift rotation.
 
 Once those three things are done — you are ready.
 
@@ -79,7 +79,7 @@ This is where most people start, and it is exactly where you should start.
 **What you do:**
 - Follow runbooks and SOPs to complete assigned tasks
 - Document what you observe during your shift
-- Open and update tickets in GitHub
+- Open and update tickets in Jira (SOCOPS)
 - Ask questions when you are not sure — asking is your job at this level
 - Show up for your shift and complete your handoff
 
@@ -116,7 +116,7 @@ T2s have demonstrated they understand the environment and can work independently
 Shift Leads are responsible for the whole shift — not just their own work.
 
 **What you do:**
-- Check the project board at the start of every shift
+- Check the SOCOPS board at the start of every shift
 - Ensure active tracking cases have eyes on them
 - Verify handoffs are complete and incoming analysts are briefed
 - Flag tool issues, escalations, and anything needing leadership attention
@@ -125,7 +125,7 @@ Shift Leads are responsible for the whole shift — not just their own work.
 **What you do not do:**
 - Handle everything yourself — your job is coordination, not doing every task
 
-**When to escalate:** Apply `status: escalated-to-josh` and ping Josh on Discord directly for anything that needs a leadership decision.
+**When to escalate:** Apply `status: escalated-to-soc-lead` and ping the SOC Lead on Discord directly for anything that needs a leadership decision.
 
 ---
 
@@ -155,14 +155,14 @@ There is no situation where acting without clarity is better than pausing and as
 
 Before you do anything else on your first shift, complete these:
 
-- [ ] Read the handoff ticket from the previous shift
+- [ ] Read the Shift Handoff record from the previous shift
 - [ ] Open and review all active tracking cases — read the full comment history
 - [ ] Check tool health (Sentinel, MDE, MISP, honeypots, Tenable) — note anything flagged as degraded
 - [ ] Introduce yourself in Discord in your shift channel if you have not already
 - [ ] Find your Shift Lead and confirm you are present and ready
-- [ ] Open the GitHub project board and orient yourself — what is active, what is in progress, what needs review
+- [ ] Open the SOCOPS board and orient yourself: what is in Intake, Triage, Investigation, and Advisory
 - [ ] Identify one task or tracking case you will focus on this shift — do not try to do everything
-- [ ] Leave a comment on the handoff ticket confirming you received the brief and close it
+- [ ] Leave a receipt on the Shift Handoff record confirming you received the brief
 
 If you get through all eight and still feel lost — that is normal. Post in Discord and ask your Shift Lead to walk you through what to focus on.
 
@@ -176,7 +176,7 @@ Asking for help is a skill. Getting good at it will make your time here signific
 
 - **Your Shift Lead** — for anything shift-related, tool questions, or "what should I be doing right now"
 - **Your team channel in Discord** — for team-specific questions, process questions, anything that is not urgent
-- **The Process & Documentation team** — for GitHub questions, documentation questions, template questions
+- **The Process & Documentation team:** for Jira questions, documentation questions, and template questions
 - **#general or #help in Discord** — for anything that does not fit elsewhere
 
 **What a good help request looks like:**
@@ -223,6 +223,8 @@ The poor example cannot be acted on. The time is vague, there are no artifact re
 - MITRE ATT&CK technique if applicable
 - What you want the next person to do with this information
 
+On an Alert Case, the two fields you enter are **SOC - Disposition** and **SOC - Triage Note**.
+
 When in doubt, write more. You can always summarize. You cannot recreate lost context.
 
 ---
@@ -247,4 +249,4 @@ See you in Discord.
 
 ---
 
-*Questions about this document? Open a GitHub issue or ask in Discord. This is a living document — if something is wrong or missing, say so.*
+*Questions about this document? Open a Jira ticket or ask in Discord. This is a living document; if something is wrong or missing, say so.*

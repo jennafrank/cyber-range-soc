@@ -8,9 +8,9 @@ These rules exist for two reasons: to protect the integrity of the range as a le
 
 ## The Tracking SOC Principle
 
-**We are observers first. Intervention is the exception, not the default.**
+**We are advisory only. We observe, investigate, and recommend. We do not contain or remediate.**
 
-The environment is intentionally vulnerable. Attackers are supposed to be here. When we intervene — isolate a device, block an IP, revoke a session — we disrupt the attacker's behavior and destroy the learning opportunity that behavior represented. We also potentially tip off the attacker that they are being watched.
+The environment is intentionally vulnerable. Attackers are supposed to be here. Isolating a device, blocking an IP, or revoking a session would disrupt the attacker's behavior, destroy the learning opportunity that behavior represents, and could tip off the attacker that they are being watched. Those decisions belong to the system owner, never to the SOC.
 
 **Observation is the mission. Document everything. Change nothing without authorization.**
 
@@ -22,41 +22,36 @@ No approval needed. This is your core job.
 
 - Monitor alerts in Sentinel and Defender for Endpoint
 - Review logs, run queries in Log Analytics / KQL
-- Open, update, and comment on GitHub tickets
+- Open, update, and comment on Jira tickets
 - Document observed attacker behavior in tracking cases
 - Review MISP threat intelligence
 - Check Tenable for asset and vulnerability context
 - Escalate observations to your Shift Lead
-- Apply labels and update ticket status in GitHub
+- Update ticket status in Jira
 - Post in Discord shift channels
 
 ---
 
-## What T1 Analysts CANNOT Do Without Approval
+## What No Analyst Does
 
-**Do not take any of these actions without explicit Shift Lead authorization.**
+No analyst at any level takes these actions. If evidence supports one of them, write it up as a recommendation (see below).
 
 - Isolate or quarantine any device in MDE
 - Disable or lock any user account in Entra ID
+- Revoke a user's sessions
 - Block an IP address at the firewall or in any security tool
-- Modify, enable, or disable any detection rule or analytic in Sentinel
-- Delete any log, alert, artifact, or ticket — anywhere
-- Change any configuration in any tool in the range
+- Delete any log, alert, artifact, or ticket, anywhere
 - Take any action on a live attacker session
 
-If you are unsure whether an action you want to take falls into this list — **it probably does. Ask first.**
+Changing a detection rule or any tool configuration needs explicit Shift Lead authorization.
 
 ---
 
-## What T2 Analysts Can Do With Shift Lead Awareness
+## When Evidence Supports Containment
 
-T2s can take the following actions, but **must notify the Shift Lead before acting** and document the action in the relevant GitHub ticket immediately after.
-
-- Device isolation in MDE — for assets confirmed out of scope or confirmed destroyed
-- Active session revocation in Entra ID — with documented justification
-- IP blocks at the firewall level — only when explicitly approved for the specific case
-
-**"Shift Lead awareness" means you told them before you did it, not after.** A quick Discord message is sufficient — "About to isolate WKSTN-047 in MDE, confirming this is in scope. Case: #42." Wait for acknowledgment before acting.
+1. Write the recommendation in the case: the finding, your confidence (High / Medium / Low), and the recommended actions in priority order.
+2. Note anything that is not established from available telemetry.
+3. Tell the Shift Lead. The Shift Lead passes the recommendation to the system owner, who decides whether and how to act.
 
 ---
 
@@ -64,10 +59,9 @@ T2s can take the following actions, but **must notify the Shift Lead before acti
 
 These actions require explicit sign-off from a Shift Lead or above. T1 and T2 analysts do not authorize these independently.
 
-- **Any containment action** — isolation, blocking, account disabling — outside the T2 scope above
+- **Passing a containment recommendation to the system owner**
 - **Severity changes on active tracking cases** — upgrading or downgrading case severity
-- **Escalation to Josh** — applying `status: escalated-to-josh` to any ticket
-- **Any action that would affect the attacker's ability to operate in the range**
+- **Escalation to SOC Lead:** escalating any Jira case to the SOC Lead
 - **Communication with external parties** about range activity
 
 ---
@@ -77,7 +71,7 @@ These actions require explicit sign-off from a Shift Lead or above. T1 and T2 an
 It happens. Here is what to do.
 
 1. **Tell your Shift Lead immediately.** Do not wait. Do not finish your shift first. Tell them now.
-2. **Document what happened** in the relevant GitHub ticket — what you did, when, and what the effect was.
+2. **Document what happened** in the relevant Jira ticket: what you did, when, and what the effect was.
 3. **Do not try to undo it without guidance.** Sometimes the undo causes more disruption than the original action. Wait for direction.
 
 **There is no judgment for honest mistakes. There is judgment for hiding them.**
@@ -86,9 +80,9 @@ An undisclosed action that affects the range can corrupt tracking data, confuse 
 
 ---
 
-## The Escalate-to-Josh Threshold
+## The Escalate-to-SOC-Lead Threshold
 
-Apply `status: escalated-to-josh` and ping Josh directly on Discord when:
+Record the escalation in the Jira case and ping the SOC Lead directly on Discord when:
 
 - **Attacker behavior crosses a severity threshold** that the team believes warrants leadership awareness — significant data access, domain-level compromise, behavior outside expected range activity
 - **A tool is critically broken** and Infra cannot resolve it within the shift
@@ -98,7 +92,7 @@ Apply `status: escalated-to-josh` and ping Josh directly on Discord when:
 
 **When in doubt, escalate.** Escalating something that turns out to be fine has zero cost. Failing to escalate something significant has real consequences.
 
-When you apply the label — also send a direct Discord message to Josh with a link to the ticket. The label creates the record. The message creates the urgency.
+When you escalate, record it in the Jira case and send the SOC Lead a direct Discord message with a link to the case. The case note creates the record. The message creates the urgency.
 
 ---
 
