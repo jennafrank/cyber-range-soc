@@ -25,7 +25,7 @@ Pacific Watch is an advisory-only security operations center that I built and ru
 
 **Built or implemented**
 - The SOC itself: queues, shifts, documentation standards, and the operating rules analysts work under.
-- The Sentinel → Logic Apps → Jira case pipeline, including dedup keys and Key Vault secret handling.
+- The Sentinel → Logic Apps → Jira case pipeline, with Key Vault secret handling.
 - The promotion gate that came out of the 316-case flood: a rule reaches SOC-BUILD only with a measured threshold and a dedup key (see [case study 01](docs/case-studies/01-queue-flood-316-cases.md)).
 - Fixes to the Logic App and detections so case titles carry the real host and count values.
 - Helped write the detections and analyst playbooks.
@@ -42,7 +42,7 @@ Pacific Watch is an advisory-only security operations center that I built and ru
 |---|---|
 | **Range in scope** | Up to 1,500 virtual machines |
 | **Team** | About 50 builders and 15 leaders across six teams |
-| **Queue flood (July)** | One unthresholded test rule, 1 host. Alerts: 228 on Jul 8, 285 on Jul 10, about 286 to 293 per day Jul 12 to 15, 2026. Jira cases: 316 total. |
+| **Queue flood (July)** | One unthresholded test rule, 1 host. Alerts: 210 to 292 per day, Jul 8 to 15, 2026 (2,210 in total through Jul 16). Jira cases: 316 total. |
 | **Under the card** | 17 alerts across 6 rules, 2026-09-25 to 09-26 UTC (09-26 partial): 1 to 9 alerts per rule per day. Not a controlled comparison with July. |
 | **Authority** | Advisory only: investigate and recommend, never remediate |
 

@@ -6,7 +6,7 @@
 
 ## Summary
 
-One unthresholded test rule, `SOCBUILD_Test_BruteForce`, scoped to 1 host, flooded the case queue. It produced 228 alerts on Jul 8, 285 on Jul 10, and about 286 to 293 alerts per day from Jul 12 to 15, 2026, and the queue took 316 Jira cases in total. I traced the flood to that rule and it was paused. The fix became the build standard: a rule reaches SOC-BUILD only with a measured threshold and a dedup key.
+One unthresholded test rule, `SOCBUILD_Test_BruteForce`, scoped to 1 host, flooded the case queue. It produced 210 to 292 alerts per day from Jul 8 to 15, 2026, and 49 more on Jul 16 before it was paused: 2,210 alerts in total. Separately, the queue took 316 Jira cases. I traced the flood to that rule and it was paused. The fix became the build standard: a rule reaches SOC-BUILD only with a measured threshold and a dedup key.
 
 ## Problem
 
@@ -16,61 +16,61 @@ At the time, rule names used underscores (`SOCBUILD_...`). They were later renam
 
 ## Investigation
 
-### The test rule: `SOCBUILD_Test_BruteForce`
+Alerts per day, SOCBUILD and SOC-BUILD rules, split into the flood rule and all other rules (SecurityAlert, full days, UTC). Run on 2026-09-25, this query returns the 12 rows below.
 
-Alerts per day (SecurityAlert, UTC):
+```kql
+SecurityAlert
+| where TimeGenerated between (datetime(2026-07-01) .. datetime(2026-07-20))
+| where AlertName startswith "SOCBUILD" or AlertName startswith "SOC-BUILD"
+| summarize Flood      = countif(AlertName startswith "SOCBUILD_Test_BruteForce"),
+            OtherRules = countif(not(AlertName startswith "SOCBUILD_Test_BruteForce")),
+            Total      = count()
+    by Day = startofday(TimeGenerated)
+| order by Day asc
+```
 
-| Day (2026) | Alerts |
-|---|---|
-| Jul 8 | 228 |
-| Jul 10 | 285 |
-| Jul 12 to Jul 15 | about 286 to 293 per day |
+| Day (2026, UTC) | Flood rule (`SOCBUILD_Test_BruteForce`) | Other rules | Total |
+|---|---|---|---|
+| Jul 8 | 228 | 0 | 228 |
+| Jul 9 | 210 | 0 | 210 |
+| Jul 10 | 285 | 0 | 285 |
+| Jul 11 | 284 | 0 | 284 |
+| Jul 12 | 288 | 0 | 288 |
+| Jul 13 | 288 | 0 | 288 |
+| Jul 14 | 286 | 0 | 286 |
+| Jul 15 | 292 | 1 | 293 |
+| Jul 16 | 49 | 9 | 58 |
+| Jul 17 | 0 | 8 | 8 |
+| Jul 18 | 0 | 9 | 9 |
+| Jul 19 | 0 | 6 | 6 |
+| **Total** | **2,210** | **33** | **2,243** |
 
 | Queue impact | Jira cases |
 |---|---|
 | Total created by the flood | 316 |
 
-### All SOCBUILD rules
-
-Alert volume by day and rule, across every SOCBUILD rule:
-
-```kql
-SecurityAlert
-| where TimeGenerated between (datetime(2026-07-11) .. datetime(2026-07-19))
-| where AlertName startswith "SOCBUILD"
-| summarize Alerts = count() by Day = bin(TimeGenerated, 1d), AlertName
-| order by Day asc
-```
-
-Daily totals, all SOCBUILD rules (UTC). The counts came from a 7-day lookback run on Jul 18, so the first day of the window was partial and is left out, and Jul 18 is marked partial.
-
-| Day (2026) | Alerts |
-|---|---|
-| Jul 12 to Jul 15 | about 286 to 293 per day |
-| Jul 16 | 58 |
-| Jul 17 | 8 |
-| Jul 18 | 8 (partial day: the query ran on Jul 18) |
-
-The drop to 58 on Jul 16 and 8 on Jul 17 follows the test rule being paused. (Confidence: High. The timing matches; the per-rule breakdown from the query above is the supporting evidence.)
+The flood rule's last alerts were on Jul 16 (49). It produced none after that.
 
 ## Finding
 
 The flood came from one test rule running with no threshold and no alert grouping.
 
-The remaining alerts on Jul 17 and 18, 2026 came from three rules:
+Alerts from other rules after the flood rule stopped (SecurityAlert, UTC):
 
-| Rule | Note |
-|---|---|
-| `SOCBUILD_Test_ValidAccounts_DeviceLogon` | Test rule |
-| `SOCBUILD_Test_PowerShell` | Test rule |
-| `SOCBUILD_PowerShell` | Production-named, but still querying `ago(7d)` with no threshold |
+| Rule | Jul 17 | Jul 18 | Jul 19 | Note |
+|---|---|---|---|---|
+| `SOCBUILD_Test_ValidAccounts_DeviceLogon` | 4 | 3 | 0 | Test rule |
+| `SOCBUILD_Test_PowerShell` | 4 | 3 | 0 | Test rule |
+| `SOCBUILD_POWERSHELL` | 0 | 2 | 0 | Production-named, but still querying `ago(7d)` with no threshold |
+| `SOCBUILD_PASSWORDSPRAY` | 0 | 1 | 0 | Password spray rule under its earlier name |
+| `SOC-BUILD-PASSWORDSPRAY` | 0 | 0 | 6 | Password spray rule, renamed |
 
 **True-positive count not established; tickets predate the disposition field.** The `SOC - Disposition` field was created on Jul 18, 2026, after the flood, so the 316 cases were not dispositioned through it.
 
 ## Resolution
 
 1. `SOCBUILD_Test_BruteForce` was paused.
-2. Across all SOCBUILD rules, alert volume fell to 58 on Jul 16 and 8 on Jul 17, 2026 (Jul 18: 8, a partial day).
+2. Across all SOCBUILD and SOC-BUILD rules, alert volume fell to 58 on Jul 16 (49 of them from the flood rule before it was paused), then 8 on Jul 17, 9 on Jul 18 and 6 on Jul 19, 2026.
 3. The fix became the build standard: a rule reaches SOC-BUILD only with a measured threshold and a dedup key. The dedup key is a promotion requirement; duplicate suppression in the Logic App was not built.
 4. Since Jul 18, 2026, Alert Cases carry the `SOC - Disposition` field, so a future flood would have a measurable true-positive rate.
 
