@@ -140,6 +140,8 @@ Knowing when to escalate, to whom, and with what context is part of the job. The
 
 ## Detection engineering
 
+The full standard, templates, and a self-audited worked example live in **[pacific-watch-detection-engineering](https://github.com/jennafrank/pacific-watch-detection-engineering)**.
+
 - **SOC-TEST → SOC-BUILD promotion.** New rules start as SOC-TEST and are promoted to SOC-BUILD only once they have a threshold and a dedup key, so no unthresholded rule reaches the queue.
 - **Detection Build Cards.** Each rule has a card that explains it in plain English: the attacker goal, where it looks, how often it runs, what trips it, what is excluded, and what the detection can and cannot see.
 - **ATT&CK mapping.** Every rule name carries its tactic, behavior, and technique ID, for example `SOC-BUILD-PERSIST-RUNKEY-T1547.001`, so an analyst knows what the rule claims before opening the case.
