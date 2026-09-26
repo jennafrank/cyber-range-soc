@@ -26,13 +26,13 @@ Pacific Watch is an advisory-only security operations center that I built and ru
 **Built or implemented**
 - The SOC itself: queues, shifts, documentation standards, and the operating rules analysts work under.
 - The Sentinel → Logic Apps → Jira case pipeline, including dedup keys and Key Vault secret handling.
-- The promotion gate that came out of the 316-case flood: a rule reaches SOC-BUILD only with a threshold and a dedup key (see [case study 01](docs/case-studies/01-queue-flood-316-cases.md)).
+- The promotion gate that came out of the 316-case flood: a rule reaches SOC-BUILD only with a measured threshold and a dedup key (see [case study 01](docs/case-studies/01-queue-flood-316-cases.md)).
 - Fixes to the Logic App and detections so case titles carry the real host and count values.
 - Helped write the detections and analyst playbooks.
 
 **Led**
 - A team of about 50 builders and 15 leaders across six teams.
-- Recovery from the 316-case queue flood, cleared within 24 hours.
+- The response to the queue flood (316 Jira cases): the rule was paused and the fix became the build standard.
 
 ---
 
@@ -42,8 +42,8 @@ Pacific Watch is an advisory-only security operations center that I built and ru
 |---|---|
 | **Range in scope** | Up to 1,500 virtual machines |
 | **Team** | About 50 builders and 15 leaders across six teams |
-| **Queue recovery** | 316 flood cases traced to unthresholded TEST brute-force rules; queue clear within 24 hours |
-| **Noise reduction** | Alert volume fell from about 286 to 293 per day (Jul 12 to 15, 2026) to 8 per day by Jul 17 to 18 |
+| **Queue flood (July)** | One unthresholded test rule, 1 host. Alerts: 228 on Jul 8, 285 on Jul 10, about 286 to 293 per day Jul 12 to 15, 2026. Jira cases: 316 total. |
+| **Under the card** | 17 alerts across 6 rules, 2026-09-25 to 09-26 UTC (09-26 partial): 1 to 9 alerts per rule per day. Not a controlled comparison with July. |
 | **Authority** | Advisory only: investigate and recommend, never remediate |
 
 ---
@@ -80,7 +80,7 @@ flowchart LR
 **1. A detection fires.** Every detection follows one path from endpoint telemetry to an analyst's queue.
 
 ![Detection to case workflow: client endpoints, Microsoft Defender, Microsoft Sentinel, Azure Logic Apps, Key Vault and deduplication, Jira security case, analyst investigation and escalation](docs/images/00-detection-to-case-workflow.png)
-<sub>The path every case takes, from endpoint to analyst.</sub>
+<sub>The path every case takes, from endpoint to analyst. The dedup step is the dedup key the Logic App composes; duplicate suppression is a promotion requirement, not a built Logic App feature.</sub>
 
 **2. The pipeline builds the case.** The Logic App composes the case, including a dedup key, and pulls its credential from Key Vault. Every rule must carry a dedup key before promotion to SOC-BUILD.
 
@@ -108,7 +108,7 @@ flowchart LR
 
 ## Selected case studies
 
-- [01: The 316-case queue flood](docs/case-studies/01-queue-flood-316-cases.md). Unthresholded test rules flooded the queue at about 290 alerts a day; the rules were paused, the queue was clear in 24 hours, and the fix became a promotion requirement.
+- [01: The 316-case queue flood](docs/case-studies/01-queue-flood-316-cases.md). One unthresholded test rule produced hundreds of alerts a day and 316 Jira cases; it was paused, and the fix became the build standard.
 - [02: Suspicious enumeration that was an exercise](docs/case-studies/02-suspicious-enumeration-exercise.md). Scripted domain enumeration first looked like a participant's account; it was a staged scenario persona, confirmed with the scenario owner and dispositioned as Authorized Simulated Activity.
 
 ---
@@ -142,9 +142,9 @@ Knowing when to escalate, to whom, and with what context is part of the job. The
 
 The full standard, templates, and a self-audited worked example live in **[pacific-watch-detection-engineering](https://github.com/jennafrank/pacific-watch-detection-engineering)**.
 
-- **SOC-TEST → SOC-BUILD promotion.** New rules start as SOC-TEST and are promoted to SOC-BUILD only once they have a threshold and a dedup key, so no unthresholded rule reaches the queue.
+- **SOC-TEST → SOC-BUILD promotion.** New rules start as SOC-TEST and are promoted to SOC-BUILD only once they have a measured threshold and a dedup key, so no unthresholded rule reaches the queue.
 - **Detection Build Cards.** Each rule has a card that explains it in plain English: the attacker goal, where it looks, how often it runs, what trips it, what is excluded, and what the detection can and cannot see.
-- **ATT&CK mapping.** Every rule name carries its tactic, behavior, and technique ID, for example `SOC-BUILD-PERSIST-RUNKEY-T1547.001`, so an analyst knows what the rule claims before opening the case.
+- **ATT&CK mapping.** Rule names carry their tactic, behavior, and technique ID, for example `SOC-BUILD-PERSIST-RUNKEY-T1547.001`, so an analyst knows what the rule claims before opening the case. Two current rules do not yet follow the pattern; that is recorded as an open finding in the detection engineering repo.
 
 ---
 
@@ -160,7 +160,7 @@ Good case notes let the next analyst, shift, or team continue an investigation w
 
 - **A detection is only useful once someone can investigate and act on it.** A rule that fires into a queue nobody can work is noise with a timestamp.
 - **The same behavior can be malicious, administrative, simulated, or expected.** The disposition comes from context, not from the alert name.
-- **Noise is operational risk.** 316 cases from unthresholded test rules buried real work until the rules were paused.
+- **Noise is operational risk.** One unthresholded test rule produced hundreds of alerts a day and 316 Jira cases, burying real work until it was paused.
 - **Documentation is part of incident response.** If the next shift has to rediscover what you found, the investigation has stalled.
 - **Escalation is a skill.** It means knowing who needs the case and what context they need to act on it.
 
@@ -194,7 +194,6 @@ cyber-range-soc/
 ├── CONTRIBUTING.md                    Joining the team and picking up work
 └── docs/
     ├── case-studies/                  Selected investigations
-    ├── examples/                      Sample incident report
     ├── images/                        Diagrams and redacted screenshots
     ├── legacy/                        Superseded files from the GitHub issues era
     ├── escalation-matrix.md           Who gets a case, and what they need
