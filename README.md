@@ -1,8 +1,6 @@
-<p align="center">
-  <img src="docs/images/pacific-watch-banner.svg" alt="Pacific Watch Security Operations Center" width="100%">
-</p>
+![Pacific Watch — Security Operations Centre](banner-pacific-watch-animated.gif)
 
-# Pacific Watch SOC
+# Pacific Watch Security Operations Center
 
 ***Investigate. Document. Advise.***
 
