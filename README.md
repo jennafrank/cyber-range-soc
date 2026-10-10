@@ -204,4 +204,70 @@ cyber-range-soc/
 
 ## Contributing
 
+## Contributors
+
+### Leadership
+
+| Name | Role | Teams | Phases |
+|------|------|-------|--------|
+| **Jenna Frank** | SOC Program Manager,  SOC Architect | All Teams | All Phases |
+| **Reginald Deroslard** | SOC Architect | Architecture | All Phases |
+
+### Security Operations Leads
+
+| Name | Teams | Phases |
+|------|-------|--------|
+| Jawad Charafeddine | Threat Intelligence | All Phases |
+| Derek Heinish | Process & Documentation | All Phases |
+| Daniel Torres | Detection Engineering | All Phases |
+| Elizabeth Harnisch | Triage & Incident Response | All Phases |
+| Pedro Parreira | Infrastructure & Tooling | All Phases |
+| Andrea Allen | Cross-Team Communication | All Phases |
+| Danielle Respes | Process & Documentation | All Phases |
+| Katie Plaster | Tooling | Phase 1 |
+| Brad Hahn | Red Team | All Phases |
+
+### Core Builders
+
+| Name | Teams |
+|------|-------|
+| Ousmane Traore | Detection Engineering · Triage & Incident Response |
+| Adetola Kolawole | Process & Documentation |
+| Chris Mondejar | Infrastructure & Tooling |
+| Jeremy S | Process & Documentation · Threat Intelligence |
+| Kemar Morrison | Process & Documentation |
+| Rich V | Threat Intelligence |
+| Samone Jones | Triage & Incident Response |
+| Te'Shawn Young | Detection Engineering · Triage & Incident Response |
+| Carlos McGrew | Threat Intelligence |
+| Shegufa Haque | Detection Engineering · Triage & Incident Response |
+| Vineet Kaur | Infrastructure & Tooling |
+| Joshua Fischer | Threat Intelligence |
+
+### Contributors
+
+| Name | Teams |
+|------|-------|
+| Jide Oyebanji | Infrastructure & Tooling · Triage & Incident Response |
+| Jamario Ganaway | Triage & Incident Response |
+| El Roi Pablo | Detection Engineering |
+| Khadija Abubakar | Infrastructure & Tooling · Process & Documentation |
+| Aboubacar Sakho | Detection Engineering |
+| James Pabon | Threat Intelligence |
+| Jhorman Fuentes | Infrastructure & Tooling |
+| Kaddy Gassama | Triage & Incident Response |
+| Kerestel Leonard | Detection Engineering |
+| Latasha Seth | Threat Intelligence |
+| Morris Benton | Detection Engineering |
+| Mosharrafa Ahmad | Threat Intelligence |
+| Sanskar Malavade | Infrastructure & Tooling |
+| Yetunde Odunlami | Process & Documentation |
+| Will Butler | Detection Engineering |
+| Jordan Bowser | Infrastructure & Tooling |
+| Karoly Mathe | Threat Intelligence |
+| Ricardo Moreno | Threat Intelligence |
+| Talamas A | Triage & Incident Response |
+| Tracey Buentello | Detection Engineering |
+| Vasanth Cn | Threat Intelligence |
+
 New analysts start with [CONTRIBUTING.md](CONTRIBUTING.md): how to get access, pick a team, and pick up your first Jira ticket. Questions go to your Shift Lead.
