@@ -263,6 +263,7 @@ cyber-range-soc/
 | Sanskar Malavade | Infrastructure & Tooling |
 | Yetunde Odunlami | Process & Documentation |
 | Will Butler | Detection Engineering |
+| Bard Foster | Detection Engineering |
 | Jordan Bowser | Infrastructure & Tooling |
 | Karoly Mathe | Threat Intelligence |
 | Ricardo Moreno | Threat Intelligence |
