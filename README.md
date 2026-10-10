@@ -267,7 +267,6 @@ cyber-range-soc/
 | Karoly Mathe | Threat Intelligence |
 | Ricardo Moreno | Threat Intelligence |
 | Talamas A | Triage & Incident Response |
-| Tracey Buentello | Detection Engineering |
 | Vasanth Cn | Threat Intelligence |
 
 New analysts start with [CONTRIBUTING.md](CONTRIBUTING.md): how to get access, pick a team, and pick up your first Jira ticket. Questions go to your Shift Lead.
