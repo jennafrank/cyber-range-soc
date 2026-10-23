@@ -187,7 +187,7 @@ Cases are raised in Microsoft Defender and tracked in Jira. Case management is m
 
 A 12-minute walkthrough of the Pacific Watch SOC build, recorded before analyst shifts began. It covers the architecture, the detection pipeline, and how alerts move from Sentinel into Jira.
 
-[![Pacific Watch walkthrough](https://cdn.loom.com/sessions/thumbnails/17fdd5863565470088f3f5baae71346a-with-play.gif)](https://www.loom.com/share/17fdd5863565470088f3f5baae71346a)
+[![Pacific Watch walkthrough](docs/walkthrough-thumb.png)](https://www.loom.com/share/17fdd5863565470088f3f5baae71346a)
 
 [Watch on Loom](https://www.loom.com/share/17fdd5863565470088f3f5baae71346a)
 
