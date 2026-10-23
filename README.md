@@ -183,6 +183,13 @@ Good case notes let the next analyst, shift, or team continue an investigation w
 Cases are raised in Microsoft Defender and tracked in Jira. Case management is moving to DFIR-IRIS.
 
 ---
+## Project Walkthrough
+
+A 12-minute walkthrough of the Pacific Watch SOC build, recorded before analyst shifts began. It covers the architecture, the detection pipeline, and how alerts move from Sentinel into Jira.
+
+[![Pacific Watch walkthrough](https://cdn.loom.com/sessions/thumbnails/17fdd5863565470088f3f5baae71346a-with-play.gif)](https://www.loom.com/share/17fdd5863565470088f3f5baae71346a)
+
+[Watch on Loom](https://www.loom.com/share/17fdd5863565470088f3f5baae71346a)
 
 ## Project structure
 
