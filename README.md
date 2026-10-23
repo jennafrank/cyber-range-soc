@@ -6,33 +6,51 @@
 
 ## What this project demonstrates
 
-Pacific Watch is an advisory-only security operations center that I built and run on the Log(N) Pacific cyber range, a training environment where beginning analysts learn real SOC work. It shows how a SOC operates day to day: how a detection becomes a case, how a queue is triaged without drowning in false positives, how an investigation survives a shift change, and how findings reach the people who have to act on them. **The SOC observes, investigates, and recommends. It does not remediate.** Containment and fixes belong to the system owner or an authorized lead.
+Pacific Watch is an advisory-only Security Operations Center (SOC) built on the Log(N) Pacific Cyber Range, a live, intentionally vulnerable Azure training environment.
 
----
+Our analysts investigate attacker activity, document findings, develop detections, and provide actionable recommendations without performing remediation.
+
+This project demonstrates how a functioning SOC operates: from detection engineering and automated incident creation to analyst triage, escalation, investigation, and cross-shift continuity.
 
 ## My role and contributions
 
-**Jenna Frank, Security Operations Manager.** I built the SOC and run it.
+**Jenna Frank | Security Operations Manager**
 
-**Designed**
-- The Jira case workflow and board.
-- The escalation path, from analyst to Shift Lead to SOC Lead.
-- The four-shift handoff ("baton-pass") process, so a case keeps moving across shifts without being rebuilt.
-- The case-disposition taxonomy, the seven values of the `SOC - Disposition` field: True Positive – Malicious, Authorized Participant Activity, Authorized Simulated Activity, False Positive, Benign Positive, Insufficient Evidence, and Duplicate. Disposition and Triage Note are the only two fields an analyst enters on an Alert Case.
-- The analyst progression ladder: T1 → T2 → Shift Lead → Specialization (detection engineer, threat hunter, or Head Investigator).
+I lead the operational development of Pacific Watch alongside a multidisciplinary volunteer leadership team, coordinating the people, processes, and technology required to operate a SOC.
 
-**Built or implemented**
-- The SOC itself: queues, shifts, documentation standards, and the operating rules analysts work under.
-- The Sentinel → Logic Apps → Jira case pipeline, with Key Vault secret handling.
-- The promotion gate that came out of the 316-case flood: a rule reaches SOC-BUILD only with a measured threshold and a dedup key (see [case study 01](docs/case-studies/01-queue-flood-316-cases.md)).
-- Fixes to the Logic App and detections so case titles carry the real host and count values.
-- Helped write the detections and analyst playbooks.
+My direct contributions include:
 
-**Led**
-- A team of about 50 builders and 15 leaders across six teams.
-- The response to the queue flood (316 Jira cases): the rule was paused and the fix became the build standard.
+- **Security Automation:** Designed and built the Microsoft Sentinel → Azure Logic Apps → Jira case-management integration, including API connections and Azure Key Vault credential handling.
+
+- **SOC Architecture & Operations:** Designed the Jira case workflow, escalation procedures, analyst progression standards, shift handoffs, and operational processes.
+
+- **Detection Engineering:** Contributed to detection development, analyst playbooks, and standards governing when detection rules are promoted into active SOC queues.
+
+- **Program Leadership:** Coordinated approximately 50 volunteers and 15 leaders across six teams responsible for security operations, detection engineering, threat intelligence, infrastructure, and documentation.
+
+- **Operational Improvements:** Led the response to a 316-case queue flood, introducing stronger detection promotion requirements to reduce unnecessary analyst workload.
+
+## Explore the project
+
+| Area | What You'll Find |
+|---|---|
+| **Architecture** | How security telemetry becomes an alert, investigation, and tracked case |
+| **Security Automation** | Microsoft Sentinel, Azure Logic Apps, API integrations, and case-management workflows |
+| **Detection Engineering** | KQL detections, MITRE ATT&CK mapping, and rule-quality standards |
+| **SOC Operations** | Analyst workflows, escalation procedures, shift handoffs, and case continuity |
+| **Case Studies** | Real operational challenges, investigations, lessons learned, and process improvements |
+| **Project Walkthrough** | A video demonstration of the architecture, automation, and case-management workflows |
+
+## Current Project Status | October 2026
+
+Pacific Watch completed approximately one month of live analyst shifts. Operations are currently paused while the leadership team reviews lessons learned and improves the SOC's workflows, detection quality, and case-management processes.
+
+The team is also transitioning case management from Jira to DFIR-IRIS.
+
+The SOC remains an advisory-only training environment. Analysts investigate and recommend; authorized system owners retain responsibility for remediation.
 
 ---
+
 
 ## Operational highlights
 
