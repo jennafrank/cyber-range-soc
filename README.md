@@ -16,7 +16,7 @@ This project demonstrates how a functioning SOC operates: from detection enginee
 
 **Jenna Frank | Security Operations Manager**
 
-I lead the operational development of Pacific Watch alongside a multidisciplinary volunteer leadership team, coordinating the people, processes, and technology required to operate a SOC.
+I lead the operational development of Pacific Watch alongside a multidisciplinary leadership team, coordinating the people, processes, and technology required to operate a SOC.
 
 My direct contributions include:
 
